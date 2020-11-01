@@ -791,6 +791,8 @@ def _git_commit(
 def _vcs_add(script, version_pkg_path, vcs='git'):
     if vcs == 'git':
         script.run('git', 'init', cwd=version_pkg_path)
+        script.run('git', 'config', 'uploadpack.allowFilter', 'true', cwd=version_pkg_path)
+        script.run('git', 'config', 'uploadpack.allowanysha1inwant', 'true', cwd=version_pkg_path)
         script.run('git', 'add', '.', cwd=version_pkg_path)
         _git_commit(script, version_pkg_path, message='initial version')
     elif vcs == 'hg':

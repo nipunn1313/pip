@@ -1,0 +1,2 @@
+Use git's partial clone feature to speed up pip
+when a git-rev is specified.

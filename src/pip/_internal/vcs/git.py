@@ -251,12 +251,15 @@ class Git(VersionControl):
         # type: (str, HiddenText, RevOptions) -> None
         rev_display = rev_options.to_display()
         logger.info('Cloning %s%s to %s', url, rev_display, display_path(dest))
-        self.run_command(make_command('clone', '-q', url, dest))
+        self.run_command(make_command(
+            'clone', '--filter=blob:none', '-q', url, dest,
+        ))
 
         if rev_options.rev:
             # Then a specific revision was requested.
             rev_options = self.resolve_revision(dest, url, rev_options)
             branch_name = getattr(rev_options, 'branch_name', None)
+            logger.info('Rev options %s, branch_name %s', rev_options, branch_name)
             if branch_name is None:
                 # Only do a checkout if the current commit id doesn't match
                 # the requested revision.

@@ -282,3 +282,24 @@ def test_resolve_commit_not_on_branch(script, tmp_path):
     # check we can fetch our commit
     rev_options = Git.make_rev_options(commit)
     Git().fetch_new(str(clone_path), repo_path.as_uri(), rev_options)
+
+
+def test_fetch_new(script, tmp_path):
+    repo_path = tmp_path / "repo"
+    repo_file = repo_path / "file.txt"
+    clone_path1 = repo_path / "clone1"
+    clone_path2 = repo_path / "clone2"
+
+    repo_path.mkdir()
+    script.run("git", "init", cwd=str(repo_path))
+    repo_file.write_text(u".")
+    script.run("git", "add", "file.txt", cwd=str(repo_path))
+    script.run("git", "commit", "-m", "initial commit", cwd=str(repo_path))
+    commit = script.run(
+        "git", "rev-parse", "HEAD", cwd=str(repo_path)
+    ).stdout.strip()
+
+    # Check that we can clone at HEAD
+    Git().fetch_new(str(clone_path1), repo_path.as_uri(), Git.make_rev_options())
+    # Check that we can clone to commit
+    Git().fetch_new(str(clone_path2), repo_path.as_uri(), Git.make_rev_options(commit))

@@ -65,6 +65,9 @@ def local_checkout(
     else:
         vcs_backend = vcs.get_backend(vcs_name)
         vcs_backend.obtain(repo_url_path, url=hide_url(remote_repo))
+        if vcs_name == 'git':
+            subprocess.check_call(['git', 'config', 'uploadpack.allowFilter', 'true'], cwd=repo_url_path)
+            subprocess.check_call(['git', 'config', 'uploadpack.allowanysha1inwant', 'true'], cwd=repo_url_path)
 
     return '{}+{}'.format(vcs_name, path_to_url(repo_url_path))
 
